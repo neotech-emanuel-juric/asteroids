@@ -16,6 +16,7 @@ def main():
             if event.type == pygame.QUIT:
                 return
         screen.fill("black")
+        player.update(dt)
         player.draw(screen) # draw the player here - it is important to fill in first, then draw sprite(s), then .flip()
         pygame.display.flip()
         dt = gameClock.tick(60) / 1000 # tick() method returns the amount of time that has passed since the last time it was called: the delta time
