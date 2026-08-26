@@ -8,7 +8,14 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     gameClock = pygame.time.Clock() # new clock object for fps
     dt = 0.0 # Delta
+
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+
+    Player.containers = (updatable, drawable) # Add Player Class to updatable and drawable pygame group, before an instance of Player exists
+
     player = Player(x = SCREEN_WIDTH / 2, y = SCREEN_HEIGHT / 2)
+
 
     while True:
         log_state()
@@ -16,8 +23,9 @@ def main():
             if event.type == pygame.QUIT:
                 return
         screen.fill("black")
-        player.update(dt)
-        player.draw(screen) # draw the player here - it is important to fill in first, then draw sprite(s), then .flip()
+        updatable.update(dt)
+        for d in drawable:
+            d.draw(screen) # draw the sprite(s) here - it is important to fill in first, then draw sprite(s), then .flip()
         pygame.display.flip()
         dt = gameClock.tick(60) / 1000 # tick() method returns the amount of time that has passed since the last time it was called: the delta time
 
