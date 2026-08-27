@@ -9,6 +9,7 @@ class Player(CircleShape):
         self.y = y
         self.radius = radius
         self.rotation = 0
+        self.shoot_cd_timer = 0 # cooldown timer for shoot action
 
         super().__init__(self.x, self.y, self.radius)
 
@@ -33,14 +34,19 @@ class Player(CircleShape):
         self.position += rotated_with_speed_vector
 
     def shoot(self) -> None:
-        shot = Shot(self.x, self.y)
-        shot_velocity = pygame.Vector2(0, 1)
-        rotated_shot = shot_velocity.rotate(self.rotation)
-        shot.velocity = rotated_shot * PLAYER_SHOOT_SPEED
+        if self.shoot_cd_timer > 0:
+            return
+        else:
+            self.shoot_cd_timer = PLAYER_SHOOT_COOLDOWN_SECONDS
+            shot = Shot(self.position.x, self.position.y)
+            shot_velocity = pygame.Vector2(0, 1)
+            rotated_shot = shot_velocity.rotate(self.rotation)
+            shot.velocity = rotated_shot * PLAYER_SHOOT_SPEED
 
     
     def update(self, dt: float) -> None:
         keys = pygame.key.get_pressed()
+        self.shoot_cd_timer -= dt
 
         if keys[PLAYER_LEFT_KEY]:
             self.rotate(-dt) # Inverse/Negative delta time for moving backwards or to the left
